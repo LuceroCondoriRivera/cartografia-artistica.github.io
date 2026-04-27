@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartografía de la Producción Artística</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --v50: #EEEDFE;
+    --v100: #CECBF6;
+    --v200: #AFA9EC;
+    --v300: #8F87E3;
+    --v400: #7F77DD;
+    --v500: #6C63D4;
+    --v600: #534AB7;
+    --v700: #453D9A;
+    --v800: #3C3489;
+    --v900: #26215C;
+    --accent: #9B8FE8;
+    --light-bg: #F5F4FE;
+    --white: #FFFFFF;
+    --text-dark: #1A1730;
+    --text-mid: #3C3489;
+    --text-muted: #6B6494;
+    --border: rgba(83,74,183,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light-bg);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(245,244,254,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(1.5rem,5vw,4rem);
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--v800);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--v600); }
+
+  .nav-cta {
+    background: var(--v600);
+    color: #fff !important;
+    padding: 0.45rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover { background: var(--v700) !important; transform: translateY(-1px); }
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--v700); border-radius: 2px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 80px clamp(1.5rem,6vw,5rem) 4rem;
+    gap: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 80% 40%, rgba(206,203,246,0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 10% 80%, rgba(175,169,236,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--v50);
+    border: 1px solid var(--v100);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--v700);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--v500);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.5; transform:scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--text-dark);
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--v600);
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-author {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-author strong {
+    color: var(--v700);
+    font-weight: 500;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--v600);
+    color: #fff;
+    padding: 0.8rem 1.8rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    border: none; cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--v700);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(83,74,183,0.3);
+  }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent;
+    color: var(--v700);
+    padding: 0.8rem 1.8rem;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid var(--v200);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--v400);
+    background: var(--v50);
+    transform: translateY(-2px);
+  }
+
+  /* hero visual */
+  .hero-visual {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+
+  .timeline-preview {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .tp-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(83,74,183,0.07);
+    transition: transform 0.2s;
+    animation: slideIn 0.5s ease both;
+  }
+
+  .tp-card:hover { transform: translateX(6px); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .tp-card:nth-child(1){ animation-delay:.1s; }
+  .tp-card:nth-child(2){ animation-delay:.2s; }
+  .tp-card:nth-child(3){ animation-delay:.3s; }
+  .tp-card:nth-child(4){ animation-delay:.4s; }
+
+  .tp-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--v50);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tp-icon svg { width: 22px; height: 22px; stroke: var(--v600); fill: none; stroke-width: 1.8; }
+
+  .tp-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .tp-period {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .tp-line {
+    position: absolute;
+    left: 21px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--v200), transparent);
+    z-index: -1;
+    display: none;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    padding: 3rem clamp(1.5rem,6vw,5rem);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap: 1.5rem;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 1.5rem 1rem;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--v600);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 3.5rem;
+    padding-top: 5rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    background: var(--v50);
+    color: var(--v700);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    border: 1px solid var(--v100);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-title em { color: var(--v600); font-style: italic; }
+
+  .section-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── MOVEMENTS GRID ── */
+  .movements-section {
+    padding: 0 clamp(1.5rem,6vw,5rem) 5rem;
+  }
+
+  .movements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .movement-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+
+  .movement-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--v400), var(--v200));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .movement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(83,74,183,0.12);
+  }
+
+  .movement-card:hover::after { opacity: 1; }
+
+  .card-header {
+    display: flex; align-items: flex-start; gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: var(--v50);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid var(--v100);
+  }
+
+  .card-icon svg {
+    width: 24px; height: 24px;
+    stroke: var(--v600); fill: none; stroke-width: 1.6;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .card-meta { flex: 1; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .card-period {
+    display: inline-block;
+    font-size: 0.73rem;
+    font-weight: 500;
+    color: var(--v700);
+    background: var(--v50);
+    padding: 0.2rem 0.7rem;
+    border-radius: 100px;
+    border: 1px solid var(--v100);
+  }
+
+  .card-definition {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+    border-left: 2px solid var(--v200);
+    padding-left: 0.9rem;
+  }
+
+  .card-rows { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .card-row {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    font-size: 0.84rem;
+  }
+
+  .card-row-label {
+    font-weight: 500;
+    color: var(--v700);
+    min-width: 90px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .card-row-value { color: var(--text-muted); line-height: 1.5; }
+
+  .card-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.2rem 0;
+  }
+
+  .card-artists {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+
+  .artist-tag {
+    font-size: 0.75rem;
+    background: var(--v50);
+    color: var(--v800);
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    border: 1px solid var(--v100);
+    font-weight: 500;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline-section {
+    background: var(--white);
+    padding: 0 clamp(1.5rem,6vw,5rem) 5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 18px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--v200), var(--v100));
+  }
+
+  .tl-item {
+    display: flex; gap: 2rem;
+    padding: 0 0 2.5rem 52px;
+    position: relative;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: 10px; top: 4px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--v600);
+    border: 3px solid var(--light-bg);
+    box-shadow: 0 0 0 2px var(--v200);
+  }
+
+  .tl-content {
+    flex: 1;
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .tl-era {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  .tl-years {
+    font-size: 0.75rem;
+    color: var(--v600);
+    font-weight: 500;
+  }
+
+  .tl-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    line-height: 1.6;
+  }
+
+  /* ── CONCLUSION ── */
+  .conclusion-section {
+    padding: 5rem clamp(1.5rem,6vw,5rem);
+    background: var(--v900);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .conclusion-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 80% 30%, rgba(127,119,221,0.3), transparent 65%),
+                radial-gradient(ellipse 40% 50% at 10% 70%, rgba(175,169,236,0.15), transparent 60%);
+    pointer-events: none;
+  }
+
+  .conclusion-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .conclusion-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    color: var(--v200);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.15);
+    margin-bottom: 1.5rem;
+  }
+
+  .conclusion-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem,4vw,3rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 2.5rem;
+  }
+
+  .conclusion-title em { color: var(--v200); font-style: italic; }
+
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .flow-step {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 1.4rem;
+    transition: background 0.2s;
+  }
+
+  .flow-step:hover { background: rgba(255,255,255,0.1); }
+
+  .flow-step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--v400);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .flow-step-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .flow-step-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+  }
+
+  .conclusion-note {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.75;
+    max-width: 680px;
+    border-left: 3px solid var(--v400);
+    padding-left: 1.5rem;
+  }
+
+  /* ── REFERENCES ── */
+  .refs-section {
+    padding: 5rem clamp(1.5rem,6vw,5rem);
+  }
+
+  .refs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+    gap: 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .ref-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    display: flex; align-items: flex-start; gap: 0.8rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .ref-card:hover {
+    border-color: var(--v300);
+    transform: translateY(-2px);
+  }
+
+  .ref-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--v50);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid var(--v100);
+  }
+
+  .ref-icon svg {
+    width: 18px; height: 18px;
+    stroke: var(--v600); fill: none; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .ref-text { flex: 1; }
+
+  .ref-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+    line-height: 1.4;
+  }
+
+  .ref-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--v900);
+    padding: 2.5rem clamp(1.5rem,6vw,5rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 700;
+  }
+
+  .footer-credits {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    text-align: right;
+  }
+
+  .footer-credits span {
+    color: var(--v300);
+  }
+
+  /* ── MOBILE NAV ── */
+  .mobile-menu {
+    display: none;
+    position: fixed; top: 64px; left: 0; right: 0;
+    background: rgba(245,244,254,0.97);
+    backdrop-filter: blur(20px);
+    padding: 1.5rem clamp(1.5rem,5vw,4rem);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    flex-direction: column; gap: 1rem;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--v700);
+    text-decoration: none;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 100px 1.5rem 3rem;
+    }
+
+    .hero-desc { margin-left: auto; margin-right: auto; }
+    .hero-author { text-align: center; }
+    .hero-actions { justify-content: center; }
+
+    .hero-visual { display: none; }
+
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .hamburger { display: flex; }
+
+    .timeline::before { left: 10px; }
+    .tl-item { padding-left: 36px; }
+    .tl-dot { left: 2px; }
+  }
+
+  @media (max-width: 600px) {
+    .stats {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .flow-steps {
+      grid-template-columns: 1fr;
+    }
+
+    footer {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .footer-credits { text-align: center; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Cartografía Artística</div>
+  <ul class="nav-links">
+    <li><a href="#movimientos">Movimientos</a></li>
+    <li><a href="#cronologia">Cronología</a></li>
+    <li><a href="#conclusion">Síntesis</a></li>
+    <li><a href="#referencias" class="nav-cta">Referencias</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#movimientos" onclick="toggleMenu()">Movimientos</a>
+  <a href="#cronologia" onclick="toggleMenu()">Cronología</a>
+  <a href="#conclusion" onclick="toggleMenu()">Síntesis</a>
+  <a href="#referencias" onclick="toggleMenu()">Referencias</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Estilos y movimientos hasta la modernidad
+    </div>
+    <h1>Cartografía de la<br><em>Producción Artística</em></h1>
+    <p class="hero-desc">Un recorrido visual y conceptual a través de los grandes movimientos del arte occidental, desde el Renacimiento hasta el Pop Art.</p>
+    <p class="hero-author">Elaborado por <strong>Lucero Condori Rivera</strong></p>
+    <div class="hero-actions">
+      <a href="#movimientos" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+        Explorar movimientos
+      </a>
+      <a href="#cronologia" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Ver cronología
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="timeline-preview">
+      <div class="tp-card">
+        <div class="tp-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+        </div>
+        <div>
+          <div class="tp-title">Renacimiento</div>
+          <div class="tp-period">1400 – 1550</div>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </div>
+        <div>
+          <div class="tp-title">Barroco</div>
+          <div class="tp-period">1600 – 1750</div>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        </div>
+        <div>
+          <div class="tp-title">Romanticismo</div>
+          <div class="tp-period">1790 – 1880</div>
+        </div>
+      </div>
+      <div class="tp-card">
+        <div class="tp-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <div class="tp-title">Surrealismo</div>
+          <div class="tp-period">1917 – 1950</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item reveal">
+    <div class="stat-num">17</div>
+    <div class="stat-label">Movimientos</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">600</div>
+    <div class="stat-label">Años de arte</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">40+</div>
+    <div class="stat-label">Artistas clave</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">8</div>
+    <div class="stat-label">Fuentes académicas</div>
+  </div>
+</div>
+
+<!-- MOVEMENTS -->
+<section class="movements-section" id="movimientos">
+  <div class="section-header reveal">
+    <div class="section-tag">Movimientos artísticos</div>
+    <h2 class="section-title">Del ideal clásico a la <em>ruptura total</em></h2>
+    <p class="section-desc">Cada movimiento redefine qué es el arte, para qué sirve y cómo se relaciona con su tiempo.</p>
+  </div>
+
+  <div class="movements-grid">
+
+    <!-- Renacimiento -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Renacimiento</div>
+          <div class="card-period">1400 – 1550</div>
+        </div>
+      </div>
+      <p class="card-definition">Construcción racional de la realidad basada en proporción, perspectiva y estudio científico.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Representar la perfección humana y el orden del mundo</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Humanismo, ciudades italianas, mecenazgo</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Leonardo da Vinci</span>
+        <span class="artist-tag">Michelangelo</span>
+        <span class="artist-tag">Rafael</span>
+        <span class="artist-tag">Botticelli</span>
+      </div>
+    </div>
+
+    <!-- Manierismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Manierismo</div>
+          <div class="card-period">1550 – 1610</div>
+        </div>
+      </div>
+      <p class="card-definition">Lenguaje estilizado que prioriza la expresión artificial sobre la natural.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Intelectualizar el arte, generar tensión visual</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Reforma protestante, conflictos europeos</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">El Greco</span>
+        <span class="artist-tag">Parmigianino</span>
+        <span class="artist-tag">Pontormo</span>
+      </div>
+    </div>
+
+    <!-- Barroco -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Barroco</div>
+          <div class="card-period">1600 – 1750</div>
+        </div>
+      </div>
+      <p class="card-definition">Instrumento emocional y teatral al servicio del poder y la fe.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Persuadir, conmover y representar poder</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Contrarreforma, monarquías absolutas</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Caravaggio</span>
+        <span class="artist-tag">Rembrandt</span>
+        <span class="artist-tag">Velázquez</span>
+        <span class="artist-tag">Rubens</span>
+      </div>
+    </div>
+
+    <!-- Rococó -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 4a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm5 11H7v-1a5 5 0 0 1 10 0z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Rococó</div>
+          <div class="card-period">1720 – 1780</div>
+        </div>
+      </div>
+      <p class="card-definition">Expresión estética de lo decorativo e íntimo para el entretenimiento aristocrático.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Placer visual y sofisticación social</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Corte francesa pre-revolucionaria</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Fragonard</span>
+        <span class="artist-tag">Boucher</span>
+        <span class="artist-tag">Watteau</span>
+      </div>
+    </div>
+
+    <!-- Neoclasicismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V10l8-7 8 7v10"/><path d="M10 20v-5h4v5"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Neoclasicismo</div>
+          <div class="card-period">1750 – 1820</div>
+        </div>
+      </div>
+      <p class="card-definition">Modelo moral basado en la razón e inspirado en la Antigüedad clásica.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Educar y transmitir valores cívicos</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Ilustración, Revoluciones americana y francesa</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Jacques-Louis David</span>
+        <span class="artist-tag">Ingres</span>
+      </div>
+    </div>
+
+    <!-- Romanticismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Romanticismo</div>
+          <div class="card-period">1790 – 1880</div>
+        </div>
+      </div>
+      <p class="card-definition">Expresión del alma, lo subjetivo y lo sublime como reacción contra la razón ilustrada.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Transmitir emoción e identidad nacional</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Revoluciones, nacionalismos</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Goya</span>
+        <span class="artist-tag">Delacroix</span>
+        <span class="artist-tag">Friedrich</span>
+      </div>
+    </div>
+
+    <!-- Realismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Realismo</div>
+          <div class="card-period">1840 – 1870</div>
+        </div>
+      </div>
+      <p class="card-definition">Representación directa y sin idealización de la realidad social contemporánea.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Crítica social, visibilizar desigualdades</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Industrialización, oposición al Romanticismo</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Courbet</span>
+        <span class="artist-tag">Jean-François Millet</span>
+      </div>
+    </div>
+
+    <!-- Impresionismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Impresionismo</div>
+          <div class="card-period">1872 – 1882</div>
+        </div>
+      </div>
+      <p class="card-definition">Percepción inmediata de la luz y el color para capturar el instante fugaz.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Registrar la experiencia visual directa</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Modernidad parisina, innovaciones técnicas</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Monet</span>
+        <span class="artist-tag">Degas</span>
+        <span class="artist-tag">Renoir</span>
+      </div>
+    </div>
+
+    <!-- Postimpresionismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M8 12l3 3 5-5"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Postimpresionismo</div>
+          <div class="card-period">1880 – 1910</div>
+        </div>
+      </div>
+      <p class="card-definition">Interpretación subjetiva de la realidad para expresar emoción y estructura más allá de la percepción.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Ir más allá de la percepción inmediata</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Van Gogh</span>
+        <span class="artist-tag">Cézanne</span>
+        <span class="artist-tag">Gauguin</span>
+      </div>
+    </div>
+
+    <!-- Modernismo/ Art Nouveau -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M8 12l3 3 5-5"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Modernismo/ Art Nouveau</div>
+          <div class="card-period">1890–1905</div>
+        </div>
+      </div>
+      <p class="card-definition">El arte es una forma total de diseño y vida, donde no existe separación entre lo artístico y lo cotidiano. Se concibe como una integración entre estética, naturaleza y funcionalidad.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Unificar las artes (arquitectura, diseño, pintura, objetos) en una experiencia estética coherente.</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Gustav Klimt</span>
+        <span class="artist-tag">Alphonse Mucha</span>
+        <span class="artist-tag">Victor Horta</span>
+      </div>
+    </div>
+
+    <!-- Fauvismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Fauvismo</div>
+          <div class="card-period">1905 – 1908</div>
+        </div>
+      </div>
+      <p class="card-definition">Expresión pura y radical a través del color como elemento autónomo.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Liberar el color de la representación fiel</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Henri Matisse</span>
+        <span class="artist-tag">André Derain</span>
+      </div>
+    </div>
+
+    <!-- Expresionismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Expresionismo</div>
+          <div class="card-period">1905 – 1933</div>
+        </div>
+      </div>
+      <p class="card-definition">Deformación emocional de la realidad para revelar el mundo interior del artista.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Externalizar el estado emocional y psíquico</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Edvard Munch</span>
+        <span class="artist-tag">E. L. Kirchner</span>
+      </div>
+    </div>
+
+    <!-- Cubismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Cubismo</div>
+          <div class="card-period">1907 – 1917</div>
+        </div>
+      </div>
+      <p class="card-definition">Análisis y fragmentación de la realidad desde múltiples perspectivas simultáneas.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Representar la complejidad del espacio-tiempo</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Pablo Picasso</span>
+        <span class="artist-tag">Georges Braque</span>
+      </div>
+    </div>
+
+    <!-- Futurismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Futurismo</div>
+          <div class="card-period">1909–1920</div>
+        </div>
+      </div>
+      <p class="card-definition">El arte es energía, velocidad, movimiento y ruptura radical con el pasado. No representa la realidad: la dinamiza.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Glorificar la modernidad, la tecnología y la transformación constante.</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Filippo Tommaso Marinetti</span>
+        <span class="artist-tag">Umberto Boccioni</span>
+      </div>
+    </div>
+
+    <!-- Dadaísmo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Dadaísmo</div>
+          <div class="card-period">1916 – 1923</div>
+        </div>
+      </div>
+      <p class="card-definition">Negación radical del arte tradicional como provocación ante el absurdo de la guerra.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Provocación crítica anti-guerra</span></div>
+        <div class="card-row"><span class="card-row-label">Contexto</span><span class="card-row-value">Primera Guerra Mundial</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Marcel Duchamp</span>
+        <span class="artist-tag">Hannah Höch</span>
+      </div>
+    </div>
+
+    <!-- Surrealismo -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Surrealismo</div>
+          <div class="card-period">1917 – 1950</div>
+        </div>
+      </div>
+      <p class="card-definition">Exploración del inconsciente y los sueños influenciada por el psicoanálisis freudiano.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Revelar las capas ocultas de la mente</span></div>
+        <div class="card-row"><span class="card-row-label">Origen</span><span class="card-row-value">Psicoanálisis de Freud</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Salvador Dalí</span>
+        <span class="artist-tag">René Magritte</span>
+      </div>
+    </div>
+
+    <!-- Pop Art -->
+    <div class="movement-card reveal">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="card-meta">
+          <div class="card-title">Pop Art</div>
+          <div class="card-period">1960 – presente</div>
+        </div>
+      </div>
+      <p class="card-definition">Reflejo y crítica irónica de la cultura de masas y la sociedad de consumo.</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-label">Función</span><span class="card-row-value">Cuestionar consumo e identidad cultural</span></div>
+      </div>
+      <hr class="card-divider">
+      <div class="card-artists">
+        <span class="artist-tag">Andy Warhol</span>
+        <span class="artist-tag">Roy Lichtenstein</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section" id="cronologia">
+  <div class="section-header reveal">
+    <div class="section-tag">Cronología</div>
+    <h2 class="section-title">Seis siglos de <em>evolución</em></h2>
+    <p class="section-desc">Del ideal renacentista a la ruptura posmoderna, un trayecto de transformación continua.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Renacimiento y Manierismo</div>
+        <div class="tl-years">1400 – 1610</div>
+        <div class="tl-desc">El arte como imitación racional de la realidad. Del ideal clásico a la tensión estilizada.</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Barroco y Rococó</div>
+        <div class="tl-years">1600 – 1780</div>
+        <div class="tl-desc">El arte como instrumento emocional, teatral y decorativo al servicio del poder y el placer.</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Neoclasicismo y Romanticismo</div>
+        <div class="tl-years">1750 – 1880</div>
+        <div class="tl-desc">Tensión entre razón y emoción. El arte como formación cívica o expresión del yo sublime.</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Realismo e Impresionismo</div>
+        <div class="tl-years">1840 – 1910</div>
+        <div class="tl-desc">Del compromiso social a la percepción fugaz. La modernidad urbana entra en el lienzo.</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Vanguardias históricas</div>
+        <div class="tl-years">1905 – 1950</div>
+        <div class="tl-desc">Fauvismo, Cubismo, Expresionismo, Dadaísmo, Surrealismo: ruptura sistemática con toda tradición anterior.</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-era">Arte contemporáneo</div>
+        <div class="tl-years">1960 – presente</div>
+        <div class="tl-desc">Pop Art y más allá: el arte interroga su propia naturaleza, el mercado y la cultura de masas.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="conclusion-section" id="conclusion">
+  <div class="conclusion-inner">
+    <div class="conclusion-tag">Síntesis conceptual</div>
+    <h2 class="conclusion-title">El arte como<br><em>lenguaje en transformación</em></h2>
+
+    <div class="flow-steps">
+      <div class="flow-step reveal">
+        <div class="flow-step-num">01</div>
+        <div class="flow-step-title">Imitación</div>
+        <div class="flow-step-desc">Renacimiento: el arte como espejo racional del mundo.</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">02</div>
+        <div class="flow-step-title">Emoción</div>
+        <div class="flow-step-desc">Del Manierismo al Romanticismo: subjetividad y sentimiento.</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">03</div>
+        <div class="flow-step-title">Crítica</div>
+        <div class="flow-step-desc">Realismo e Impresionismo: lo social y lo perceptivo.</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">04</div>
+        <div class="flow-step-title">Ruptura</div>
+        <div class="flow-step-desc">Vanguardias: cuestionamiento total de los lenguajes previos.</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">05</div>
+        <div class="flow-step-title">Concepto</div>
+        <div class="flow-step-desc">Dadaísmo, Pop Art: el arte se interroga a sí mismo.</div>
+      </div>
+    </div>
+
+    <p class="conclusion-note reveal">
+      A lo largo de esta cartografía, el arte deja de responder únicamente a la belleza y pasa a ser un lenguaje crítico, político, psicológico y conceptual — un reflejo vivo de cada época y sus contradicciones.
+    </p>
+  </div>
+</section>
+
+<!-- REFERENCES -->
+<section class="refs-section" id="referencias">
+  <div class="section-header reveal">
+    <div class="section-tag">Bibliografía</div>
+    <h2 class="section-title">Fuentes <em>académicas</em></h2>
+    <p class="section-desc">Referencias confiables para profundizar en cada movimiento y artista.</p>
+  </div>
+
+  <div class="refs-grid">
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">The Metropolitan Museum of Art</div>
+        <div class="ref-subtitle">Heilbrunn Timeline of Art History</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Tate Modern</div>
+        <div class="ref-subtitle">Art & Artists</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M12 8v8M8 12h8"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Museum of Modern Art</div>
+        <div class="ref-subtitle">Art movements and artists</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">E. H. Gombrich</div>
+        <div class="ref-subtitle">The Story of Art</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Honour & Fleming</div>
+        <div class="ref-subtitle">A World History of Art</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Arnason, H. H.</div>
+        <div class="ref-subtitle">History of Modern Art</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Arnold Hauser</div>
+        <div class="ref-subtitle">Historia social de la literatura y el arte</div>
+      </div>
+    </div>
+    <div class="ref-card reveal">
+      <div class="ref-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </div>
+      <div class="ref-text">
+        <div class="ref-title">Encyclopaedia Britannica</div>
+        <div class="ref-subtitle">Art history entries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Cartografía Artística</div>
+  <div class="footer-credits">Elaborado por <span>Lucero Condori Rivera</span><br>Estilos y movimientos hasta la modernidad</div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const m = document.getElementById('mobileMenu');
+    m.classList.toggle('open');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
